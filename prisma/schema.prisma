@@ -1,0 +1,48 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:../database/workflows.sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Workflow {
+  id          Int      @id @default(autoincrement())
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  status      String   @default("pending")
+  input       Json?
+  steps       Step[]
+  lastRetry DateTime?
+  nextRetry DateTime @default(now())
+}
+
+model Step {
+  id          Int      @id @default(autoincrement())
+  status      String   @default("pending")
+  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  workflowId  Int
+  input      Json?
+  output      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  maxRetries Int @default(0)
+  retries Int @default(0)
+  lastRestry DateTime?
+  attempts    StepAttempt[]
+  name String @default("anonymous")
+}
+
+model StepAttempt {
+  id         Int      @id @default(autoincrement())
+  step       Step     @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  stepId     Int
+  status     String   @default("pending") // success, failed, retrying
+  input      Json?
+  output     Json?
+  error      Json?   // Aqui armazenamos a mensagem de erro ou stack trace
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
