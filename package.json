@@ -6,8 +6,10 @@
   },
   "scripts": {
     "dev": "npx tsup src && node dist",
+    "dev:watch": "npx nodemon -e ts --exec npm run dev",
     "dev:monitor": "ts-node server",
-    "dev:init": "npx prisma migrate deploy && npx prisma generate"
+    "dev:init": "npx prisma migrate deploy && npx prisma generate",
+    "dev:test": "npx ts-node src/test"
   },
   "dependencies": {
     "@bull-board/api": "^6.7.10",

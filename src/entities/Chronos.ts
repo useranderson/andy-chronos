@@ -82,7 +82,7 @@ export class Chronos {
 
         for (const workflow of pendingWorkflows) {
           try {
-            console.log(`Executando workflow: ${workflow.name}`);
+            console.log(`Tentando executar workflow: ${workflow.name}`);
 
             const workflowFunction = workflows[workflow.name];
 
@@ -101,12 +101,12 @@ export class Chronos {
           } catch (error) {
             console.log(
               "❌ Ocorreu um erro ao tentar executar o workflow",
-              JSON.stringify({ error })
+              error
             );
           }
         }
 
-        await new Promise((res) => setTimeout(res, 10000)); // Aguarda 5s antes de verificar novamente
+        await new Promise((res) => setTimeout(res, 1000 * 15));
       }
     };
 

@@ -21,7 +21,7 @@ CREATE TABLE "Step" (
     "updatedAt" DATETIME NOT NULL,
     "maxRetries" INTEGER NOT NULL DEFAULT 0,
     "retries" INTEGER NOT NULL DEFAULT 0,
-    "lastRestry" DATETIME,
+    "lastRetry" DATETIME,
     "name" TEXT NOT NULL DEFAULT 'anonymous',
     CONSTRAINT "Step_workflowId_fkey" FOREIGN KEY ("workflowId") REFERENCES "Workflow" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );

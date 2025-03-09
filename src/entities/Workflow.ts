@@ -1,19 +1,22 @@
 import { WorkflowData } from "../types";
+import { InternalWorkflow } from "./InternalWorkflow";
 import { Step } from "./Step";
 
 export class Workflow {
-  private data: WorkflowData;
+  private internalWorkflow: InternalWorkflow;
+  private initialInput: any;
 
-  constructor(workflowData: WorkflowData) {
-    this.data = workflowData;
+  constructor(parameters: { workflowData: WorkflowData }) {
+    const { workflowData } = parameters;
+
+    this.internalWorkflow = new InternalWorkflow({ workflowData });
+    this.initialInput = workflowData.input;
   }
-
-  start<InitialData>() {
-    return new Step(
-      this.data.input as InitialData,
-      [],
-      this.data.id,
-      this.data.steps || []
-    );
+  start<Input>() {
+    return new Step<Input, Input>({
+      internalWorkflow: this.internalWorkflow,
+      internalSteps: [],
+      initialInput: this.initialInput,
+    });
   }
 }

@@ -1,30 +1,24 @@
 <html>
+
 <head>
     <title>Workflow Monitor</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <script>
         function toggleAttempts(stepId) {
             const attemptsRow = document.getElementById(`attempts-${stepId}`);
-            if (attemptsRow.style.display === "none") {
-                attemptsRow.style.display = "table-row";
-            } else {
-                attemptsRow.style.display = "none";
-            }
+            attemptsRow.style.display = attemptsRow.style.display === "none" ? "table-row" : "none";
         }
 
         function toggleSteps(workflowId) {
             const stepsRow = document.getElementById(`steps-${workflowId}`);
-            if (stepsRow.style.display === "none") {
-                stepsRow.style.display = "table-row";
-            } else {
-                stepsRow.style.display = "none";
-            }
+            stepsRow.style.display = stepsRow.style.display === "none" ? "table-row" : "none";
         }
     </script>
 </head>
+
 <body class="p-6">
     <h1 class="text-2xl font-bold mb-4">Workflow Monitor</h1>
-    
+
     <table class="min-w-full bg-white border border-gray-300">
         <thead>
             <tr>
@@ -33,23 +27,29 @@
                 <th class="border px-4 py-2">Status</th>
                 <th class="border px-4 py-2">Ultima tentativa</th>
                 <th class="border px-4 py-2">Proxima tentativa</th>
-                <!-- <th class="border px-4 py-2">Criado em</th> -->
-                <!-- <th class="border px-4 py-2">Última Atualização</th> -->
             </tr>
         </thead>
         <tbody>
-            <% workflows.forEach(workflow => { %>
+            <% workflows.forEach(workflow=> { %>
                 <tr onclick="toggleSteps('<%= workflow.id %>')" style="cursor: pointer;">
-                    <td class="border px-4 py-2"><%= workflow.id %></td>
-                    <td class="border px-4 py-2"><%= workflow.name %></td>
-                    <td class="border px-4 py-2"><%= workflow.status %></td>
-                    <td class="border px-4 py-2"><%= workflow.lastRetry ? new Date(workflow.lastRetry).toLocaleString() : null %></td>
-                    <td class="border px-4 py-2"><%= workflow.nextRetry ? new Date(workflow.nextRetry).toLocaleString() : null %></td>
-                    <!-- <td class="border px-4 py-2"><%= new Date(workflow.createdAt).toLocaleString() %></td> -->
-                    <!-- <td class="border px-4 py-2"><%= new Date(workflow.updatedAt).toLocaleString() %></td> -->
+                    <td class="border px-4 py-2">
+                        <%= workflow.id %>
+                    </td>
+                    <td class="border px-4 py-2">
+                        <%= workflow.name %>
+                    </td>
+                    <td class="border px-4 py-2">
+                        <%= workflow.status %>
+                    </td>
+                    <td class="border px-4 py-2">
+                        <%= workflow.lastRetry ? new Date(workflow.lastRetry).toLocaleString() : null %>
+                    </td>
+                    <td class="border px-4 py-2">
+                        <%= workflow.nextRetry ? new Date(workflow.nextRetry).toLocaleString() : null %>
+                    </td>
                 </tr>
-                <tr id="steps-<%= workflow.id %>">
-                    <td colspan="5" class="">
+                <tr id="steps-<%= workflow.id %>" style="display: none;">
+                    <td colspan="5">
                         <table class="w-full border-l-4 border-blue-400">
                             <thead>
                                 <tr>
@@ -57,59 +57,85 @@
                                     <th class="border px-4 py-2">Nome da função</th>
                                     <th class="border px-4 py-2">Status</th>
                                     <th class="border px-4 py-2">Criado em</th>
-                                    <!-- <th class="border px-4 py-2">Última Atualização</th> -->
                                     <th class="border px-4 py-2">Última Tentativa</th>
                                     <th class="border px-4 py-2">Input</th>
                                     <th class="border px-4 py-2">Output</th>
-                                    <th class="border px-4 py-2">Retentativas</th> <!-- Nova coluna para retentativas -->
+                                    <th class="border px-4 py-2">Retentativas</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% workflow.steps.forEach(step => { %>
+                                <% workflow.steps.forEach(step=> { %>
                                     <tr onclick="toggleAttempts('<%= step.id %>')" style="cursor: pointer;">
-                                        <td class="border px-4 py-2"><%= step.id %></td>
-                                        <td class="border px-4 py-2"><%= step.name %></td>
-                                        <td class="border px-4 py-2"><%= step.status %></td>
-                                        <td class="border px-4 py-2"><%= new Date(step.createdAt).toLocaleString() %></td>
-                                        <!-- <td class="border px-4 py-2"><%= new Date(step.updatedAt).toLocaleString() %></td> -->
-                                        <td class="border px-4 py-2"><%= step.lastRestry ? new Date(step.lastRestry).toLocaleString() : null %></td>
-                                        <td class="border px-4 py-2"><pre class="w-full text-xs overflow-auto bg-gray-100 p-2 border border-neutral-300 rounded-lg p-2 whitespace-pre-wrap break-words"><%= JSON.stringify(step.input, null, 2) %></pre></td>
-                                        <td class="border px-4 py-2"><pre class="w-full text-xs overflow-auto bg-gray-100 p-2 border border-neutral-300 rounded-lg p-2 whitespace-pre-wrap break-words"><%= JSON.stringify(step.output, null, 2) %></pre></td>
-                                        <td class="border px-4 py-2"><%= step.retries || 0 %>/<%= step.maxRetries || 0 %></td> <!-- Exibe o número de retentativas -->
+                                        <td class="border px-4 py-2">
+                                            <%= step.id %>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <%= step.name %>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <%= step.status %>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <%= new Date(step.createdAt).toLocaleString() %>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <%= step.lastRetry ? new Date(step.lastRetry).toLocaleString() : null %>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <pre
+                                                class="w-full text-xs overflow-auto bg-gray-100 p-2 border border-neutral-300 rounded-lg whitespace-pre-wrap break-words max-h-96"><%= JSON.stringify(step.input, null, 2) %></pre>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <pre
+                                                class="w-full text-xs overflow-auto bg-gray-100 p-2 border border-neutral-300 rounded-lg whitespace-pre-wrap break-words max-h-96"><%= JSON.stringify(step.output, null, 2) %></pre>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <%= step.retries || 0 %>/<%= step.maxRetries || 0 %>
+                                        </td>
                                     </tr>
-                                    <% if (step.attempts && step.attempts.length > 0) { %>
+                                    <% if (step.attempts && step.attempts.length> 0) { %>
                                         <tr id="attempts-<%= step.id %>" style="display: none;">
-                                            <td colspan="8" class=""> <!-- Ajuste para colspan="7" devido à nova coluna -->
+                                            <td colspan="8">
                                                 <table class="min-w-full bg-white border-l-4 border-green-400">
                                                     <thead>
                                                         <tr>
-                                                            <th class="border border-neutral-500 px-4 py-2">Tentativa</th>
+                                                            <th class="border px-4 py-2">Tentativa</th>
                                                             <th class="border px-4 py-2">Status</th>
                                                             <th class="border px-4 py-2">Criado em</th>
                                                             <th class="border px-4 py-2">Erro</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <% step.attempts.forEach(attempt => { %>
+                                                        <% step.attempts.forEach(attempt=> { %>
                                                             <tr>
-                                                                <td class="border px-4 py-2"><%= attempt.id %></td>
-                                                                <td class="border px-4 py-2"><%= attempt.status %></td>
-                                                                <td class="border px-4 py-2"><%= new Date(attempt.createdAt).toLocaleString() %></td>
-                                                                <td class="border px-4 py-2 max-w-xs"><pre class="w-full text-xs overflow-auto bg-gray-100 p-2 border border-neutral-300 rounded-lg p-2 whitespace-pre-wrap break-words"><%= JSON.stringify(attempt.error, null, 2) %></pre></td>
+                                                                <td class="border px-4 py-2">
+                                                                    <%= attempt.id %>
+                                                                </td>
+                                                                <td class="border px-4 py-2">
+                                                                    <%= attempt.status %>
+                                                                </td>
+                                                                <td class="border px-4 py-2">
+                                                                    <%= new Date(attempt.createdAt).toLocaleString() %>
+                                                                </td>
+                                                                <td class="border px-4 py-2 max-w-xs">
+                                                                    <pre
+                                                                        class="w-full text-xs overflow-auto bg-gray-100 p-2 border border-neutral-300 rounded-lg whitespace-pre-wrap break-words"><%= JSON.stringify(attempt.error, null, 2) %></pre>
+                                                                </td>
                                                             </tr>
-                                                        <% }) %>
+                                                            <% }) %>
                                                     </tbody>
                                                 </table>
                                             </td>
                                         </tr>
-                                    <% } %>
-                                <% }) %>
+                                        <% } %>
+                                            <% }) %>
                             </tbody>
                         </table>
                     </td>
                 </tr>
-            <% }) %>
+                <% }) %>
         </tbody>
     </table>
 </body>
+
 </html>
