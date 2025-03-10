@@ -14,3 +14,8 @@ export interface StepArgs<Input> {
 export interface StepConfig {
   maxRetries?: number;
 }
+
+export type StepExecute<Input, Result, InitialInput> = (
+  input: Input,
+  stepControlls: StepArgs<InitialInput>
+) => Promise<Result>;

@@ -113,7 +113,7 @@ export class InternalWorkflow {
             });
 
             if (
-              createdStep?.retries &&
+              createdStep?.maxRetries &&
               createdStep.retries >= createdStep.maxRetries
             ) {
               console.log(
