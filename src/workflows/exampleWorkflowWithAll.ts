@@ -10,32 +10,49 @@ export default async (workflowData: WorkflowData) => {
       const { id, team_id } = params;
       const { stop } = stepControll;
 
-      // Em qualquer step o stop pode ser usado
+      // Em qualquer step pode ser o stop pode ser usado
       // para interromper todo o workflow
       if (!id) stop("id is required");
       if (!team_id) stop("team_id is required");
 
       return { id, team_id };
     })
-    .step(async function getUserData(params, stepControll) {
-      const { id, team_id } = params;
-      const { stop } = stepControll;
+    // .all agrupa vários steps porém todos recebem o mesmo input
+    // e retorna um objeto com o retorno de de todos os steps
+    .all<{ getUserData: User; getEmailTemplate: EmailTemplate }>((steps) =>
+      steps()
+        .step(async function getUserData(params, stepControll) {
+          const { id } = params;
+          const { stop } = stepControll;
 
-      const user = await getUserById(id);
-      if (!user) stop("User not found");
+          const user = await getUserById(id);
 
-      const template = await getTemplateByTeamId(team_id);
-      if (!template) stop("Template not found");
+          if (!user) stop("User not found");
 
-      return { user, template };
-    })
+          return user;
+        })
+        .step(async function getEmailTemplate(params, stepControll) {
+          const { team_id } = params;
+          const { stop } = stepControll;
+
+          const template = await getTemplateByTeamId(team_id);
+
+          if (!template) stop("Template not found");
+
+          return template;
+        })
+        // o .all precisa de um ponto .end
+        .end()
+    )
     .step(
       async function sendEmail(params) {
-        const { template, user } = params;
+        const { getEmailTemplate: template, getUserData: userData } = params;
 
-        await sendEmailService(user!.email, template!.text);
-        // propositalmente não passando o user
+        await sendEmailService(userData.email, template.text);
+        // propositalmente não passando o userData
       },
+      // todos os steps podem ser configurados e sobreescrever as
+      // configurações padrões
       { maxRetries: 3 }
     )
     .step(async function createNotification(_, stepControll) {
