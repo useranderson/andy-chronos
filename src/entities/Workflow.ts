@@ -13,10 +13,11 @@ export class Workflow {
     this.initialInput = workflowData.input;
   }
   start<Input>() {
-    return new Step<Input, Input>({
+    return new Step<Input, Input, "DEFAULT">({
       internalWorkflow: this.internalWorkflow,
       internalSteps: [],
       initialInput: this.initialInput,
+      type: "DEFAULT",
     });
   }
 }

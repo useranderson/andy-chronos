@@ -65,7 +65,7 @@ export const executeWorkflow = async (parameters: {
       return;
     }
 
-    const nextRetry = addSeconds(new Date(), 30);
+    const nextRetry = addSeconds(new Date(), 5);
 
     await internalProcess(
       prisma.workflow.update({

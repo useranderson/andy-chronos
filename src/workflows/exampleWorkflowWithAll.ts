@@ -15,7 +15,7 @@ export default async (workflowData: WorkflowData) => {
       if (!id) stop("id is required");
       if (!team_id) stop("team_id is required");
 
-      return { id, team_id };
+      return { id, teamId: team_id };
     })
     // .all agrupa vários steps porém todos recebem o mesmo input
     // e retorna um objeto com o retorno de de todos os steps
@@ -32,10 +32,10 @@ export default async (workflowData: WorkflowData) => {
           return user;
         })
         .step(async function getEmailTemplate(params, stepControll) {
-          const { team_id } = params;
+          const { teamId } = params;
           const { stop } = stepControll;
 
-          const template = await getTemplateByTeamId(team_id);
+          const template = await getTemplateByTeamId(teamId);
 
           if (!template) stop("Template not found");
 
